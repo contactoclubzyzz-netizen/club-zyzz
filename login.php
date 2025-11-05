@@ -8,6 +8,7 @@ require 'conexion.php';
 
 // Si ya hay sesión iniciada, redirige al panel
 if (isset($_SESSION['usuario_id'])) {
+    // Verificar si ya tiene datos corporales
     $usuario_id = $_SESSION['usuario_id'];
     $query2 = "SELECT COUNT(*) as total FROM datos_corporales WHERE usuario_id = ?";
     $stmt2 = $conexion->prepare($query2);
@@ -31,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
     $password = trim($_POST['contrasena']);
 
-    // Buscar usuario por email (usando 'id' como PK)
+    // Buscar usuario por email
     $query = "SELECT id, contrasena FROM usuarios WHERE email = ?";
     $stmt = $conexion->prepare($query);
 
@@ -42,9 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bind_param("s", $email);
     $stmt->execute();
 
+    // Obtener resultado como array asociativo
     $result = $stmt->get_result();
 
-    if ($result && $result->num_rows > 0) {
+    if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         $usuario_id = $row['id'];
         $hashed_password = $row['contrasena'];
@@ -61,6 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt2->fetch();
             $stmt2->close();
 
+            // Redirigir según tenga o no datos
             if ($tiene_datos > 0) {
                 header("Location: panel_usuario.php");
             } else {
@@ -82,22 +85,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registro | CLUB ZYZZ</title>
+  <title>CLUB ZYZZ – Iniciar Sesión</title>
   <link rel="stylesheet" href="css/estilo.css">
 </head>
 <body>
   <h1>CLUB ZYZZ</h1>
-  <h2>Crea tu cuenta</h2>
+  <h2>Inicia sesión y transforma tu físico</h2>
 
   <div class="register-box">
+    <?php if (!empty($error)): ?>
+      <p style="color:red; font-weight:bold; text-align:center; margin-bottom:15px;">
+        <?= htmlspecialchars($error) ?>
+      </p>
+    <?php endif; ?>
+
     <form method="POST" action="">
-      <input type="text" name="nombre" placeholder="Nombre completo" required>
-      <input type="email" name="email" placeholder="Correo electrónico" required>
-      <input type="password" name="contrasena" placeholder="Contraseña" required>
-      <button type="submit">Registrarme</button>
+      <input type="email" name="email" placeholder="Correo electrónico" required />
+      <input type="password" name="contrasena" placeholder="Contraseña" required />
+      <button type="submit">INICIAR SESIÓN</button>
     </form>
+
     <div class="back-link">
-      ¿Ya tienes cuenta? — <a href="login.php">Iniciar sesión</a>
+       ¿No tienes una cuenta? — <a href="registro.php">Registrarse</a>
     </div>
   </div>
 </body>
