@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // 🔹 Verificar que el correo no esté repetido en la base de datos
-    $checkEmail = $conexion->prepare("SELECT id FROM usuarios WHERE email = ?");
+    $checkEmail = $conexion->prepare("SELECT idPrimaria FROM usuarios WHERE email = ?");
     $checkEmail->bind_param("s", $email);
     $checkEmail->execute();
     $checkEmail->store_result();
@@ -76,3 +76,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </div>
 </body>
 </html>
+
