@@ -1,12 +1,13 @@
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+
 require 'conexion.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre = trim($_POST['nombre']);
     $email = trim($_POST['email']);
-    $password = trim($_POST['contrasena']); // ⚠️ coincide con el input name
+    $password = trim($_POST['contrasena']); // ⚠️ Aquí coincide con el input name
 
     // 🔹 Verificar que el correo tenga un dominio real
     $dominio = substr(strrchr($email, "@"), 1);
@@ -75,4 +76,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </div>
 </body>
 </html>
+
 
