@@ -8,7 +8,6 @@ require 'conexion.php';
 
 // Si ya hay sesión iniciada, redirige al panel
 if (isset($_SESSION['usuario_id'])) {
-    // Verificar si ya tiene datos corporales
     $usuario_id = $_SESSION['usuario_id'];
     $query2 = "SELECT COUNT(*) as total FROM datos_corporales WHERE usuario_id = ?";
     $stmt2 = $conexion->prepare($query2);
@@ -43,18 +42,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bind_param("s", $email);
     $stmt->execute();
 
-    // Obtener resultado como array asociativo
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        $usuario_id = $row['id'];
+        $usuario_id = $row['idPrimaria']; // CORREGIDO
         $hashed_password = $row['contrasena'];
 
         if (password_verify($password, $hashed_password)) {
             $_SESSION['usuario_id'] = $usuario_id;
 
-            // Verificar si el usuario ya tiene sus datos corporales
             $query2 = "SELECT COUNT(*) as total FROM datos_corporales WHERE usuario_id = ?";
             $stmt2 = $conexion->prepare($query2);
             $stmt2->bind_param("i", $usuario_id);
@@ -63,7 +60,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt2->fetch();
             $stmt2->close();
 
-            // Redirigir según tenga o no datos
             if ($tiene_datos > 0) {
                 header("Location: panel_usuario.php");
             } else {
@@ -111,4 +107,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </div>
 </body>
 </html>
+
 
