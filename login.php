@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = trim($_POST['contrasena']);
 
     // Buscar usuario por email
-    $query = "SELECT id, contrasena FROM usuarios WHERE email = ?";
+    $query = "SELECT idPrimaria, contrasena FROM usuarios WHERE email = ?";
     $stmt = $conexion->prepare($query);
 
     if (!$stmt) {
