@@ -1,0 +1,78 @@
+<?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+require 'conexion.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $nombre = trim($_POST['nombre']);
+    $email = trim($_POST['email']);
+    $password = trim($_POST['contrasena']); // ⚠️ Aquí coincide con el input name
+
+    // 🔹 Verificar que el correo tenga un dominio real
+    $dominio = substr(strrchr($email, "@"), 1);
+    if (!checkdnsrr($dominio, "MX")) {
+        echo "<script>alert('❌ El correo ingresado no es real.'); window.history.back();</script>";
+        exit();
+    }
+
+    // 🔹 Verificar que el correo no esté repetido en la base de datos
+    $checkEmail = $conexion->prepare("SELECT id FROM usuarios WHERE email = ?");
+    $checkEmail->bind_param("s", $email);
+    $checkEmail->execute();
+    $checkEmail->store_result();
+
+    if ($checkEmail->num_rows > 0) {
+        echo "<script>alert('⚠️ Este correo ya está registrado.'); window.history.back();</script>";
+        exit();
+    }
+    $checkEmail->close();
+
+    // Encriptar contraseña
+    $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+
+    // Insertar usuario
+    $sql = "INSERT INTO usuarios (nombre, email, contrasena) VALUES (?, ?, ?)";
+    $stmt = $conexion->prepare($sql);
+    $stmt->bind_param("sss", $nombre, $email, $passwordHash);
+
+    if ($stmt->execute()) {
+        // ✅ Mostrar mensaje de éxito y luego redirigir
+        echo "<script>
+            alert('✅ Registro exitoso. ¡Bienvenido a CLUB ZYZZ!');
+            window.location.href = 'login.php';
+        </script>";
+        exit();
+    } else {
+        echo "Error al registrar: " . $conexion->error;
+    }
+
+    $stmt->close();
+}
+?>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro | CLUB ZYZZ</title>
+  <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+  <h1>CLUB ZYZZ</h1>
+  <h2>Crea tu cuenta</h2>
+
+  <div class="register-box">
+    <form method="POST" action="">
+      <input type="text" name="nombre" placeholder="Nombre completo" required>
+      <input type="email" name="email" placeholder="Correo electrónico" required>
+      <input type="password" name="contrasena" placeholder="Contraseña" required>
+      <button type="submit">Registrarme</button>
+    </form>
+    <div class="back-link">
+      ¿Ya tienes cuenta? — <a href="login.php">Iniciar sesión</a>
+    </div>
+  </div>
+</body>
+</html>
