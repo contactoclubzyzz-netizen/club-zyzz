@@ -82,28 +82,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CLUB ZYZZ – Iniciar Sesión</title>
+  <title>Registro | CLUB ZYZZ</title>
   <link rel="stylesheet" href="css/estilo.css">
 </head>
 <body>
   <h1>CLUB ZYZZ</h1>
-  <h2>Inicia sesión y transforma tu físico</h2>
+  <h2>Crea tu cuenta</h2>
 
   <div class="register-box">
-    <?php if (!empty($error)): ?>
-      <p style="color:red; font-weight:bold; text-align:center; margin-bottom:15px;">
-        <?= htmlspecialchars($error) ?>
-      </p>
-    <?php endif; ?>
-
     <form method="POST" action="">
-      <input type="email" name="email" placeholder="Correo electrónico" required />
-      <input type="password" name="contrasena" placeholder="Contraseña" required />
-      <button type="submit">INICIAR SESIÓN</button>
+      <input type="text" name="nombre" placeholder="Nombre completo" required>
+      <input type="email" name="email" placeholder="Correo electrónico" required>
+      <input type="password" name="contrasena" placeholder="Contraseña" required>
+      <button type="submit">Registrarme</button>
     </form>
-
     <div class="back-link">
-       ¿No tienes una cuenta? — <a href="registro.php">Registrarse</a>
+      ¿Ya tienes cuenta? — <a href="login.php">Iniciar sesión</a>
     </div>
   </div>
 </body>
