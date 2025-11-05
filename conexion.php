@@ -1,15 +1,18 @@
 <?php
 $conexion = new mysqli(
-    "sql306.infinityfree.com", 
-    "if0_40171034", 
-    "zyzzfit1234", 
-    "if0_40171034_club_zyzz_db"
+    "bb2quyrjq72z3krsicwd-mysql.services.clever-cloud.com", // Host
+    "u37xmonw2xgktd6m", // Usuario
+    "RS3Gzn0LON0figDDExFP", // Contraseña
+    "bb2quyrjq72z3krsicwd", // Nombre de la base de datos
+    3306 // Puerto
 );
 
+// Comprobamos la conexión
 if ($conexion->connect_error) {
     die("❌ Conexión fallida: " . $conexion->connect_error);
 }
 
-// Establecer charset utf8
 $conexion->set_charset("utf8");
+
+echo "✅ Conexión exitosa a Clever Cloud MySQL";
 ?>
